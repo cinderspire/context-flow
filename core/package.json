@@ -1,0 +1,14 @@
+{
+  "name": "@context-flow/core",
+  "version": "1.0.0",
+  "description": "Context Flow Core Engine",
+  "main": "index.ts",
+  "dependencies": {
+    "uuid": "^9.0.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "@types/uuid": "^9.0.7",
+    "typescript": "^5.3.0"
+  }
+}

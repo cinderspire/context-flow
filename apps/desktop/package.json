@@ -1,0 +1,83 @@
+{
+  "name": "context-flow-desktop",
+  "version": "2.0.0",
+  "description": "Context Flow - Intelligent Workspace Manager for Logitech MX Creative Console",
+  "main": "src/main/fixed-main.js",
+  "author": "Context Flow Team",
+  "license": "MIT",
+  "scripts": {
+    "dev": "electron src/main/fixed-main.js",
+    "start": "electron src/main/fixed-main.js",
+    "build": "electron-builder --mac --arm64",
+    "build:all": "electron-builder --mac",
+    "pack": "electron-builder --dir",
+    "postinstall": "electron-builder install-app-deps",
+    "test": "jest"
+  },
+  "build": {
+    "appId": "com.contextflow.desktop",
+    "productName": "Context Flow",
+    "directories": {
+      "output": "dist",
+      "buildResources": "build"
+    },
+    "files": [
+      "src/**/*",
+      "assets/**/*",
+      "node_modules/**/*"
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64", "x64"]
+        },
+        {
+          "target": "zip",
+          "arch": ["arm64", "x64"]
+        }
+      ],
+      "category": "public.app-category.productivity",
+      "icon": "assets/icon.icns",
+      "minimumSystemVersion": "12.0",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "contents": [
+        {
+          "x": 130,
+          "y": 220
+        },
+        {
+          "x": 410,
+          "y": 220,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "electron": "^34.0.2",
+    "electron-builder": "^24.9.1"
+  },
+  "dependencies": {},
+  "keywords": [
+    "productivity",
+    "workspace",
+    "context-switching",
+    "logitech",
+    "mx-creative-console",
+    "electron",
+    "macos"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/context-flow.git"
+  },
+  "bugs": {
+    "url": "https://github.com/yourusername/context-flow/issues"
+  },
+  "homepage": "https://contextflow.app"
+}

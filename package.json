@@ -1,0 +1,12 @@
+{
+  "name": "context-flow",
+  "version": "1.0.0",
+  "description": "Context Flow - Workflow teleportation",
+  "private": true,
+  "scripts": {
+    "dev": "cd apps/desktop && npm run dev",
+    "build": "cd apps/desktop && npm run build"
+  },
+  "keywords": ["productivity", "logitech"],
+  "license": "MIT"
+}
