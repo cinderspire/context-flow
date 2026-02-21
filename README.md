@@ -5,12 +5,15 @@
 **Context Flow** is an AI-powered workspace preservation system for the Logitech MX ecosystem. One button press saves your entire workspace state - apps, files, tools, and settings. Another click instantly restores it. It's not a macro, it's **workflow teleportation**.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Logitech DevStudio 2026](https://img.shields.io/badge/Logitech-DevStudio%202026-blue)](https://logitech.com)
+[![Electron](https://img.shields.io/badge/Electron-34.0-47848F?logo=electron)](https://electronjs.org)
+[![Platform](https://img.shields.io/badge/platform-macOS-lightgrey?logo=apple)](https://apple.com)
 
 ---
 
 ## 🎬 Demo
 
-> **1-Minute Pitch Video**: See `docs/PITCH.md` for the complete script
+> **1-Minute Pitch Video**: Coming soon (YouTube link will be added before Feb 25 deadline)
 
 **The Magic Moment:**
 1. Press **SNAP** on your MX Creative Console
@@ -53,7 +56,7 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/contextflow/context-flow.git
+git clone https://github.com/cinderspire/context-flow.git
 cd context-flow
 
 # Run setup script
@@ -221,7 +224,7 @@ This project was built for the **Logitech DevStudio 2026 Challenge**.
 
 ```bash
 # Fork and clone
-git clone https://github.com/YOUR_USERNAME/context-flow.git
+git clone https://github.com/cinderspire/context-flow.git
 
 # Install dependencies
 npm install

@@ -171,17 +171,15 @@ This isn't a concept video. We built working software that you can install and u
 ## 🔗 Links
 
 ### Video Demo
-**YouTube:** [youtube.com/watch?v=CONTEXT_FLOW_DEMO](https://youtube.com)
-*(1 minute, public, HD)*
+**YouTube:** *(link will be added after recording — deadline Feb 25)*
 
 ### Try It Out
-**Download:** [contextflow.dev/download](https://contextflow.dev)
-**GitHub:** [github.com/contextflow/context-flow](https://github.com)
+**GitHub:** [github.com/cinderspire/context-flow](https://github.com/cinderspire/context-flow)
 
 ### Supporting Materials
-- **Architecture Deep Dive:** [docs/architecture.md](docs/architecture.md)
-- **Vision Roadmap:** [docs/vision.md](docs/vision.md)
-- **API Documentation:** [docs/api.md](docs/api.md)
+- **Architecture Deep Dive:** [docs/ARCHITECTURE.md](ARCHITECTURE.md)
+- **Vision Roadmap:** [docs/VISION.md](VISION.md)
+- **Pitch Script:** [docs/PITCH.md](PITCH.md)
 
 ---
 
@@ -205,9 +203,7 @@ This isn't a concept video. We built working software that you can install and u
 
 | Name | Role | Contribution |
 |------|------|--------------|
-| [Your Name] | Founder, Developer | Core architecture, app adapters |
-| [Team Member] | UI/UX Designer | Interface design, video production |
-| [Team Member] | AI Engineer | Prediction engine, ML models |
+| cinderspire | Founder & Full-Stack Developer | Core architecture, UI, AI engine, hardware integration |
 
 ---
 
@@ -228,9 +224,7 @@ MIT License - See [LICENSE](LICENSE) for details
 
 ## 📞 Contact
 
-**Email:** hello@contextflow.dev  
-**Twitter:** [@contextflow](https://twitter.com/contextflow)  
-**Website:** [contextflow.dev](https://contextflow.dev)
+**GitHub:** [@cinderspire](https://github.com/cinderspire)
 
 ---
 
