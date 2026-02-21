@@ -5,15 +5,21 @@
 **Context Flow** is an AI-powered workspace preservation system for the Logitech MX ecosystem. One button press saves your entire workspace state - apps, files, tools, and settings. Another click instantly restores it. It's not a macro, it's **workflow teleportation**.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
-[![Logitech DevStudio 2026](https://img.shields.io/badge/Logitech-DevStudio%202026-blue)](https://logitech.com)
+[![Logitech DevStudio 2026](https://img.shields.io/badge/Logitech-DevStudio%202026-blue)](https://devstudiologitech2026.devpost.com)
 [![Electron](https://img.shields.io/badge/Electron-34.0-47848F?logo=electron)](https://electronjs.org)
 [![Platform](https://img.shields.io/badge/platform-macOS-lightgrey?logo=apple)](https://apple.com)
+[![Download](https://img.shields.io/github/v/release/cinderspire/context-flow?label=download&color=10b981)](https://github.com/cinderspire/context-flow/releases/latest)
+
+**[🌐 Landing Page](https://cinderspire.github.io/context-flow/) · [⬇ Download DMG](https://github.com/cinderspire/context-flow/releases/latest) · [📝 Devpost](https://devstudiologitech2026.devpost.com)**
 
 ---
 
 ## 🎬 Demo
 
-> **1-Minute Pitch Video**: Coming soon (YouTube link will be added before Feb 25 deadline)
+> **1-Minute Pitch Video**: *(YouTube link — add after recording, before Feb 25)*
+
+**Landing Page**: [cinderspire.github.io/context-flow](https://cinderspire.github.io/context-flow/)
+**Download**: [Latest Release (macOS DMG)](https://github.com/cinderspire/context-flow/releases/latest)
 
 **The Magic Moment:**
 1. Press **SNAP** on your MX Creative Console
