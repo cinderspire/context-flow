@@ -1,13 +1,13 @@
-# 🌊 Context Flow - Vizyon Dökümanı
+# 🌊 Context Flow — Vision Document
 
 > **Evolution: From Context Snap to Context Intelligence Platform**
 
 ---
 
-## 🎯 Vizyon Özeti
+## 🎯 Vision Summary
 
-**Bugün:** Context Snap - Workflow teleportation  
-**Gelecek:** Context Intelligence - AI-powered productivity layer
+**Today:** Context Snap — Workflow teleportation
+**Future:** Context Intelligence — AI-powered productivity layer
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
@@ -33,7 +33,7 @@
 
 ---
 
-## 🏗️ Üç Katmanlı Mimarî Vizyonu
+## 🏗️ Three-Layer Architecture Vision
 
 ### Layer 1: Context Preservation (MVP - 2026)
 **Odak:** State capture and restore
@@ -136,10 +136,10 @@ User Action → Context Engine → State Storage → Instant Restore
 
 ---
 
-## 📈 Genişleme Stratejisi
+## 📈 Expansion Strategy
 
 ### Phase 1: Individual Productivity (MVP)
-**Timeline:** Hackathon + 3 months  
+**Timeline:** Hackathon + 3 months
 **Target:** Creatives, developers, power users  
 **Value:** Save 5+ hours/week
 
@@ -152,8 +152,8 @@ Use Cases:
 ```
 
 ### Phase 2: Team Collaboration (Pro)
-**Timeline:** 6-12 months  
-**Target:** Remote teams, agencies, studios  
+**Timeline:** 6-12 months
+**Target:** Remote teams, agencies, studios
 **Value:** Onboarding + collaboration efficiency
 
 ```
@@ -165,8 +165,8 @@ Use Cases:
 ```
 
 ### Phase 3: Enterprise Platform
-**Timeline:** 12-24 months  
-**Target:** Large orgs, regulated industries  
+**Timeline:** 12-24 months
+**Target:** Large orgs, regulated industries
 **Value:** Compliance + standardization
 
 ```
@@ -178,8 +178,8 @@ Use Cases:
 ```
 
 ### Phase 4: Spatial Computing
-**Timeline:** 24-36 months  
-**Target:** XR users, spatial workers  
+**Timeline:** 24-36 months
+**Target:** XR users, spatial workers
 **Value:** Seamless 2D↔3D transitions
 
 ```

@@ -166,6 +166,36 @@ Context Flow learns your patterns:
 
 ---
 
+## 🚀 Vision: From Snap to Intelligence Platform
+
+Context Flow is not just a hackathon project. It's the foundation for an entirely new category of software — **Context Intelligence**.
+
+```
+2026            2027                2028               2029+
+  │               │                   │                  │
+  ▼               ▼                   ▼                  ▼
+SNAP           PRO + AI           TEAM COLLAB        PLATFORM
+─────          ────────           ───────────        ────────
+Manual snap    + Predictive       + Shared ctx       + VR Bridge
+5 app support  + Cloud sync       + Templates        + Marketplace
+Local only     + Analytics        + Enterprise       + OS-level
+```
+
+**Revenue Projection:**
+| Year | ARR | Key Milestone |
+|------|-----|---------------|
+| 2026 | $0 → MVP | Hackathon win + 10K users |
+| 2027 | $1.08M | 10K Pro users @ $9/mo |
+| 2028 | $6.54M | Teams + Pro scaled |
+| 2029 | $33M+ | Enterprise + Platform |
+
+**Why This Matters for Logitech:**
+Every Context Flow user who saves a workspace automatically demonstrates the value of MX hardware. The snap button becomes as essential as the power button. Logitech devices stop being peripherals — they become **the control layer for human attention**.
+
+> Full vision document: [docs/VISION.md](docs/VISION.md)
+
+---
+
 ## 🏆 DevStudio 2026
 
 This project was built for the **Logitech DevStudio 2026 Challenge**.
@@ -246,9 +276,19 @@ MIT License - see [LICENSE](LICENSE)
 
 ## 🙏 Acknowledgments
 
-- **Logitech** for the MX ecosystem
-- **Electron team** for the framework
-- **DevStudio 2026** for the opportunity
+- **Logitech** for the MX ecosystem and the inspiring DevStudio challenge
+- **Electron team** for the excellent cross-platform framework
+- **DevStudio 2026** for the opportunity to build something meaningful
+
+---
+
+## 👋 About the Developer
+
+Built solo by **[@cinderspire](https://github.com/cinderspire)** — a full-stack developer passionate about human-computer interaction, productivity tooling, and hardware-software integration.
+
+**Open to collaboration and opportunities** — especially within teams building the future of how humans interact with computers and creative tools.
+
+If you're a Logitech engineer, product manager, or anyone building at the intersection of hardware and productivity software — I'd love to connect.
 
 ---
 
@@ -257,5 +297,7 @@ MIT License - see [LICENSE](LICENSE)
 **"Stop switching apps. Start switching contexts."**
 
 🌊 **Context Flow** 🌊
+
+*Built for [Logitech DevStudio 2026](https://logitech.com)*
 
 </div>
