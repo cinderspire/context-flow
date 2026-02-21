@@ -30,11 +30,17 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["arm64", "x64"]
+          "arch": [
+            "arm64",
+            "x64"
+          ]
         },
         {
           "target": "zip",
-          "arch": ["arm64", "x64"]
+          "arch": [
+            "arm64",
+            "x64"
+          ]
         }
       ],
       "category": "public.app-category.productivity",
@@ -60,9 +66,8 @@
   },
   "devDependencies": {
     "electron": "^34.0.2",
-    "electron-builder": "^24.9.1"
+    "electron-builder": "^24.13.3"
   },
-  "dependencies": {},
   "keywords": [
     "productivity",
     "workspace",

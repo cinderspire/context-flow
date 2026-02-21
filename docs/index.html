@@ -1,0 +1,803 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Context Flow — Workflow Teleportation for Logitech MX</title>
+  <meta name="description" content="One button to save your entire workspace. One click to instantly restore it. Built for Logitech MX Creative Console & Actions Ring." />
+  <meta property="og:title" content="Context Flow — Workflow Teleportation" />
+  <meta property="og:description" content="Stop losing 5 weeks a year to context switching. One button saves everything." />
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --indigo: #6366f1;
+      --violet: #8b5cf6;
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --bg: #030712;
+      --surface: #0f172a;
+      --border: rgba(255,255,255,0.08);
+      --text: #f1f5f9;
+      --muted: #64748b;
+      --subtle: #94a3b8;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 40px;
+      background: rgba(3,7,18,0.8);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 18px; }
+    .nav-logo-icon {
+      width: 32px; height: 32px;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .nav-links { display: flex; gap: 32px; align-items: center; }
+    .nav-links a {
+      text-decoration: none;
+      color: var(--subtle);
+      font-size: 14px;
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-cta {
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      color: white !important;
+      padding: 8px 20px;
+      border-radius: 8px;
+      font-weight: 600;
+      font-size: 13px !important;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-glow {
+      position: absolute;
+      top: 20%; left: 50%;
+      transform: translate(-50%, -50%);
+      width: 800px; height: 500px;
+      background: radial-gradient(ellipse, rgba(99,102,241,0.25) 0%, transparent 70%);
+      pointer-events: none;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.3);
+      padding: 6px 16px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #a5b4fc;
+      margin-bottom: 32px;
+      letter-spacing: 0.5px;
+    }
+    .hero-badge-dot {
+      width: 6px; height: 6px;
+      background: var(--indigo);
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.5; transform: scale(1.3); }
+    }
+    .hero h1 {
+      font-size: clamp(42px, 7vw, 88px);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -2px;
+      margin-bottom: 24px;
+      position: relative;
+    }
+    .hero h1 .grad {
+      background: linear-gradient(135deg, #e0e7ff 0%, var(--indigo) 40%, var(--violet) 70%, #a855f7 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: clamp(16px, 2.5vw, 22px);
+      color: var(--subtle);
+      max-width: 600px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+    }
+    .hero-sub strong { color: var(--text); }
+    .hero-actions { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin-bottom: 64px; }
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      color: white;
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 700;
+      font-size: 15px;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 4px 24px rgba(99,102,241,0.4);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(99,102,241,0.5); }
+    .btn-secondary {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid var(--border);
+      color: var(--text);
+      text-decoration: none;
+      padding: 14px 28px;
+      border-radius: 12px;
+      font-weight: 600;
+      font-size: 15px;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .btn-secondary:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.15); }
+
+    /* ── APP PREVIEW ── */
+    .app-preview {
+      position: relative;
+      max-width: 420px;
+      margin: 0 auto;
+      border-radius: 20px;
+      overflow: hidden;
+      border: 1px solid rgba(99,102,241,0.3);
+      box-shadow: 0 40px 120px rgba(0,0,0,0.8), 0 0 80px rgba(99,102,241,0.2);
+    }
+    .app-frame {
+      background: #0a0a0f;
+      padding: 0;
+    }
+    .app-header-demo {
+      background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+      padding: 20px;
+    }
+    .app-logo-row {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 10px;
+    }
+    .app-logo-left { display: flex; align-items: center; gap: 10px; }
+    .app-icon-box {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.2);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+    .app-title { font-size: 16px; font-weight: 700; color: white; }
+    .app-sub { font-size: 11px; color: rgba(255,255,255,0.8); }
+    .app-badge-live {
+      background: rgba(16,185,129,0.2);
+      border: 1px solid rgba(16,185,129,0.4);
+      color: #34d399;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 4px 10px;
+      border-radius: 20px;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .app-badge-live::before {
+      content: '';
+      width: 5px; height: 5px;
+      background: #34d399;
+      border-radius: 50%;
+      animation: pulse 2s infinite;
+    }
+    .app-hw-row {
+      display: flex; gap: 6px; margin-top: 8px;
+    }
+    .app-hw-tag {
+      background: rgba(255,255,255,0.12);
+      border: 1px solid rgba(255,255,255,0.2);
+      font-size: 10px;
+      color: rgba(255,255,255,0.9);
+      padding: 3px 8px;
+      border-radius: 6px;
+    }
+    .app-body { padding: 14px; }
+    .snap-btn-demo {
+      width: 100%;
+      background: linear-gradient(135deg, #10b981, #059669);
+      border: none;
+      border-radius: 12px;
+      color: white;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 14px;
+      margin-bottom: 14px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(16,185,129,0.3);
+    }
+    .ctx-label {
+      display: flex; justify-content: space-between;
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #64748b;
+      font-weight: 600;
+      margin-bottom: 8px;
+    }
+    .ctx-count {
+      background: #6366f1;
+      color: white;
+      padding: 1px 8px;
+      border-radius: 10px;
+      font-size: 10px;
+    }
+    .ctx-item {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-bottom: 6px;
+      display: flex; align-items: center; gap: 10px;
+    }
+    .ctx-item.active { border-color: rgba(99,102,241,0.3); background: rgba(99,102,241,0.08); }
+    .ctx-emoji {
+      width: 36px; height: 36px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 20px;
+    }
+    .ctx-info { flex: 1; }
+    .ctx-name { font-size: 12px; font-weight: 600; margin-bottom: 2px; }
+    .ctx-meta { font-size: 10px; color: #64748b; }
+    .ctx-restore {
+      background: rgba(16,185,129,0.15);
+      border: 1px solid rgba(16,185,129,0.25);
+      color: #34d399;
+      font-size: 10px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    /* ── STATS ── */
+    .stats {
+      display: flex;
+      justify-content: center;
+      gap: 48px;
+      padding: 60px 24px;
+      flex-wrap: wrap;
+    }
+    .stat { text-align: center; }
+    .stat-num {
+      font-size: 48px;
+      font-weight: 800;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+    .stat-label { font-size: 14px; color: var(--muted); }
+
+    /* ── SECTION ── */
+    section { padding: 100px 24px; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    .section-label {
+      text-align: center;
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--indigo);
+      margin-bottom: 16px;
+    }
+    .section-title {
+      text-align: center;
+      font-size: clamp(32px, 5vw, 52px);
+      font-weight: 800;
+      letter-spacing: -1.5px;
+      margin-bottom: 16px;
+      line-height: 1.1;
+    }
+    .section-sub {
+      text-align: center;
+      color: var(--subtle);
+      font-size: 18px;
+      max-width: 560px;
+      margin: 0 auto 64px;
+      line-height: 1.7;
+    }
+
+    /* ── HOW IT WORKS ── */
+    .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; }
+    .step-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      transition: border-color 0.3s, transform 0.3s;
+      position: relative;
+      overflow: hidden;
+    }
+    .step-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+    }
+    .step-card:nth-child(1)::before { background: linear-gradient(90deg, var(--indigo), var(--violet)); }
+    .step-card:nth-child(2)::before { background: linear-gradient(90deg, var(--violet), #a855f7); }
+    .step-card:nth-child(3)::before { background: linear-gradient(90deg, var(--emerald), #34d399); }
+    .step-card:hover { border-color: rgba(99,102,241,0.3); transform: translateY(-4px); }
+    .step-num {
+      width: 48px; height: 48px;
+      border-radius: 12px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+    }
+    .step-card:nth-child(1) .step-num { background: rgba(99,102,241,0.15); }
+    .step-card:nth-child(2) .step-num { background: rgba(139,92,246,0.15); }
+    .step-card:nth-child(3) .step-num { background: rgba(16,185,129,0.15); }
+    .step-title { font-size: 20px; font-weight: 700; margin-bottom: 10px; }
+    .step-desc { color: var(--subtle); font-size: 15px; line-height: 1.7; }
+    .step-shortcut {
+      display: inline-block;
+      margin-top: 14px;
+      background: rgba(99,102,241,0.15);
+      border: 1px solid rgba(99,102,241,0.25);
+      color: #a5b4fc;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 4px 12px;
+      border-radius: 6px;
+      font-family: 'SF Mono', 'Consolas', monospace;
+    }
+
+    /* ── FEATURES ── */
+    .features-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 24px;
+      transition: border-color 0.3s;
+    }
+    .feature-card:hover { border-color: rgba(99,102,241,0.3); }
+    .feature-icon { font-size: 28px; margin-bottom: 14px; }
+    .feature-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+    .feature-desc { color: var(--subtle); font-size: 14px; line-height: 1.6; }
+
+    /* ── HARDWARE ── */
+    .hw-section {
+      background: linear-gradient(135deg, rgba(99,102,241,0.08), rgba(139,92,246,0.06));
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .hw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; align-items: center; }
+    @media (max-width: 768px) { .hw-grid { grid-template-columns: 1fr; } }
+    .hw-device {
+      background: var(--surface);
+      border: 1px solid rgba(99,102,241,0.2);
+      border-radius: 20px;
+      padding: 32px;
+      text-align: center;
+    }
+    .hw-device-icon { font-size: 64px; margin-bottom: 16px; }
+    .hw-device-name { font-size: 18px; font-weight: 700; margin-bottom: 8px; }
+    .hw-device-role {
+      display: inline-block;
+      background: rgba(99,102,241,0.15);
+      color: #a5b4fc;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 4px 14px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      margin-bottom: 16px;
+    }
+    .hw-device-desc { color: var(--subtle); font-size: 14px; line-height: 1.7; }
+    .hw-connector {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+    .hw-connector-line {
+      width: 2px; height: 60px;
+      background: linear-gradient(to bottom, var(--indigo), var(--violet));
+    }
+    .hw-connector-label {
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+    }
+
+    /* ── VISION ── */
+    .vision-timeline { position: relative; padding-left: 40px; }
+    .vision-timeline::before {
+      content: '';
+      position: absolute;
+      left: 8px; top: 8px; bottom: 8px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--indigo), var(--violet), var(--emerald));
+    }
+    .timeline-item { position: relative; margin-bottom: 48px; }
+    .timeline-dot {
+      position: absolute;
+      left: -36px; top: 4px;
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 2px solid var(--indigo);
+      background: var(--bg);
+    }
+    .timeline-dot.done { background: var(--indigo); }
+    .timeline-year {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--indigo);
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .timeline-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+    .timeline-desc { color: var(--subtle); font-size: 15px; line-height: 1.7; max-width: 560px; }
+    .timeline-tags { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
+    .timeline-tag {
+      background: rgba(99,102,241,0.1);
+      border: 1px solid rgba(99,102,241,0.2);
+      color: #a5b4fc;
+      font-size: 12px;
+      padding: 3px 10px;
+      border-radius: 6px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      padding: 60px 24px 40px;
+      border-top: 1px solid var(--border);
+      text-align: center;
+    }
+    .footer-logo { font-size: 24px; font-weight: 800; margin-bottom: 12px; }
+    .footer-tagline { color: var(--muted); font-size: 15px; margin-bottom: 24px; }
+    .footer-links { display: flex; gap: 24px; justify-content: center; margin-bottom: 32px; }
+    .footer-links a { color: var(--subtle); text-decoration: none; font-size: 14px; transition: color 0.2s; }
+    .footer-links a:hover { color: var(--text); }
+    .footer-sub { color: var(--muted); font-size: 13px; }
+    .logitech-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--indigo), var(--violet));
+      color: white;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 16px;
+      border-radius: 8px;
+      margin-bottom: 20px;
+      letter-spacing: 0.5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">
+      <div class="nav-logo-icon">🌊</div>
+      Context Flow
+    </div>
+    <div class="nav-links">
+      <a href="#how">How It Works</a>
+      <a href="#features">Features</a>
+      <a href="#hardware">Hardware</a>
+      <a href="#vision">Vision</a>
+      <a href="https://github.com/cinderspire/context-flow" target="_blank" class="nav-cta">GitHub →</a>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <section class="hero">
+    <div class="hero-glow"></div>
+
+    <div class="hero-badge">
+      <span class="hero-badge-dot"></span>
+      Logitech DevStudio 2026 — Category: MX Creative Console + Actions Ring
+    </div>
+
+    <h1>
+      <span class="grad">Workflow</span><br />
+      <span class="grad">Teleportation.</span>
+    </h1>
+
+    <p class="hero-sub">
+      You switch apps <strong>1,200 times a day</strong>. Each switch costs 23 seconds.
+      That's <strong>5 weeks a year</strong> lost to getting back to where you were.
+      Context Flow solves it with one button.
+    </p>
+
+    <div class="hero-actions">
+      <a href="https://github.com/cinderspire/context-flow" target="_blank" class="btn-primary">
+        ⬇ View on GitHub
+      </a>
+      <a href="#how" class="btn-secondary">
+        ▶ See How It Works
+      </a>
+    </div>
+
+    <!-- MINI APP PREVIEW -->
+    <div class="app-preview">
+      <div class="app-frame">
+        <div class="app-header-demo">
+          <div class="app-logo-row">
+            <div class="app-logo-left">
+              <div class="app-icon-box">🌊</div>
+              <div>
+                <div class="app-title">Context Flow</div>
+                <div class="app-sub">v2.0.0 • Beta</div>
+              </div>
+            </div>
+            <div class="app-badge-live">Active</div>
+          </div>
+          <div class="app-hw-row">
+            <div class="app-hw-tag">● MX Creative Console</div>
+            <div class="app-hw-tag">● Actions Ring</div>
+          </div>
+        </div>
+        <div class="app-body">
+          <button class="snap-btn-demo">📸 SNAP CURRENT CONTEXT</button>
+          <div class="ctx-label">
+            <span>📁 Saved Contexts</span>
+            <span class="ctx-count">4</span>
+          </div>
+          <div class="ctx-item active">
+            <div class="ctx-emoji">🎨</div>
+            <div class="ctx-info">
+              <div class="ctx-name">3D Character Sculpt</div>
+              <div class="ctx-meta">Blender, Figma, Chrome • 2h ago</div>
+            </div>
+            <div class="ctx-restore">▶ Restore</div>
+          </div>
+          <div class="ctx-item">
+            <div class="ctx-emoji">💻</div>
+            <div class="ctx-info">
+              <div class="ctx-name">Code Review Session</div>
+              <div class="ctx-meta">VSCode, Terminal, Chrome • Yesterday</div>
+            </div>
+            <div class="ctx-restore">▶ Restore</div>
+          </div>
+          <div class="ctx-item">
+            <div class="ctx-emoji">📹</div>
+            <div class="ctx-info">
+              <div class="ctx-name">Client Presentation</div>
+              <div class="ctx-meta">Zoom, Notion, Chrome • 3d ago</div>
+            </div>
+            <div class="ctx-restore">▶ Restore</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stat">
+      <div class="stat-num">1,200</div>
+      <div class="stat-label">App switches per day</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">23s</div>
+      <div class="stat-label">Recovery time each switch</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">5 wks</div>
+      <div class="stat-label">Lost per year</div>
+    </div>
+    <div class="stat">
+      <div class="stat-num">1s</div>
+      <div class="stat-label">Context Flow restore time</div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <section id="how">
+    <div class="container">
+      <div class="section-label">How It Works</div>
+      <h2 class="section-title">Three steps.<br />One second.</h2>
+      <p class="section-sub">No setup. No configuration. Press, twist, click — you're back.</p>
+      <div class="steps">
+        <div class="step-card">
+          <div class="step-num">📸</div>
+          <div class="step-title">1. Press SNAP</div>
+          <p class="step-desc">Tap the SNAP button on your MX Creative Console. Your entire workspace — every app, every file, every window position — is captured in under one second.</p>
+          <div class="step-shortcut">Cmd+Shift+S</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">🎛️</div>
+          <div class="step-title">2. Twist the Ring</div>
+          <p class="step-desc">Spin the MX Master Actions Ring to scroll through your saved contexts. Each click of the dial highlights a different snapshot with haptic feedback.</p>
+          <div class="step-shortcut">Actions Ring</div>
+        </div>
+        <div class="step-card">
+          <div class="step-num">🚀</div>
+          <div class="step-title">3. Teleport Back</div>
+          <p class="step-desc">Click to restore. Every application launches, every file reopens, every window snaps back to its exact position. One second. Perfectly restored.</p>
+          <div class="step-shortcut">Cmd+Shift+R</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURES -->
+  <section id="features" style="padding-top: 0;">
+    <div class="container">
+      <div class="section-label">Features</div>
+      <h2 class="section-title">Not a macro.<br />An intelligence layer.</h2>
+      <p class="section-sub">Context Flow captures semantic state — not just what apps are open, but what's inside them.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <div class="feature-title">AI Suggestions</div>
+          <p class="feature-desc">Learns your patterns. Suggests "Morning Dev Session" at 9am. Suggests "Meeting Prep" 10 minutes before your calendar event.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🪟</div>
+          <div class="feature-title">Complete State Capture</div>
+          <p class="feature-desc">VSCode workspace, Chrome tabs, Terminal directory, Figma file — not just window positions, but what's inside each app.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔒</div>
+          <div class="feature-title">Privacy-First</div>
+          <p class="feature-desc">All data stays on your device. No cloud. No telemetry. All AI runs locally. Your workspace is yours.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">⚡</div>
+          <div class="feature-title">Sub-Second Snap</div>
+          <p class="feature-desc">Despite capturing complex multi-app states, the snap operation completes in under 1 second. You won't feel interrupted.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">🎮</div>
+          <div class="feature-title">Hardware-Native</div>
+          <p class="feature-desc">Built ground-up for Logitech Actions SDK. The Console becomes a capture button. The Ring becomes a context navigator.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">📊</div>
+          <div class="feature-title">Productivity Analytics</div>
+          <p class="feature-desc">See which contexts you use most, when your peak focus hours are, and how much time you save each week.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HARDWARE -->
+  <section id="hardware" class="hw-section">
+    <div class="container">
+      <div class="section-label">Hardware Integration</div>
+      <h2 class="section-title">Built for the MX ecosystem.</h2>
+      <p class="section-sub">Two devices. Two roles. One seamless workflow.</p>
+      <div class="hw-grid">
+        <div class="hw-device">
+          <div class="hw-device-icon">🎛️</div>
+          <div class="hw-device-name">MX Creative Console</div>
+          <div class="hw-device-role">CAPTURE LAYER</div>
+          <p class="hw-device-desc">The dedicated SNAP key becomes your context save button. One physical press — your entire digital workspace is preserved in 1 second. No mouse. No keyboard shortcut required.</p>
+        </div>
+        <div class="hw-connector">
+          <div class="hw-connector-line"></div>
+          <div class="hw-connector-label">CONTEXT FLOW</div>
+          <div class="hw-connector-line"></div>
+        </div>
+        <div class="hw-device">
+          <div class="hw-device-icon">⭕</div>
+          <div class="hw-device-name">MX Master Actions Ring</div>
+          <div class="hw-device-role">NAVIGATION LAYER</div>
+          <p class="hw-device-desc">Twist the ring to scroll through saved contexts with satisfying haptic clicks. Select your destination. Press to teleport. It feels like physical time travel.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISION -->
+  <section id="vision">
+    <div class="container">
+      <div class="section-label">Vision</div>
+      <h2 class="section-title">Today: Snap.<br />Tomorrow: Intelligence.</h2>
+      <p class="section-sub">Context Flow is a foundation, not just a feature. We're building the AI layer between humans and their digital workspaces.</p>
+      <div class="vision-timeline">
+        <div class="timeline-item">
+          <div class="timeline-dot done"></div>
+          <div class="timeline-year">2026 — Now</div>
+          <div class="timeline-title">Context Snap (MVP)</div>
+          <p class="timeline-desc">One-button workspace capture and restore. Works with VSCode, Chrome, Terminal, Figma, and any app via generic window capture.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">✓ Shipped</span>
+            <span class="timeline-tag">Logitech DevStudio 2026</span>
+            <span class="timeline-tag">macOS</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2027 — Pro</div>
+          <div class="timeline-title">Context Intelligence</div>
+          <p class="timeline-desc">AI-powered predictions, cloud sync across devices, productivity analytics dashboard, and calendar integration.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Predictive AI</span>
+            <span class="timeline-tag">Cloud Sync</span>
+            <span class="timeline-tag">Analytics</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2028 — Team</div>
+          <div class="timeline-title">Context Collaboration</div>
+          <p class="timeline-desc">Share contexts with your team. Junior devs inherit senior dev environments instantly. Design handoffs become one click.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">Shared Workspaces</span>
+            <span class="timeline-tag">Team Templates</span>
+            <span class="timeline-tag">Enterprise</span>
+          </div>
+        </div>
+        <div class="timeline-item">
+          <div class="timeline-dot"></div>
+          <div class="timeline-year">2029 — Platform</div>
+          <div class="timeline-title">Context Ecosystem</div>
+          <p class="timeline-desc">VR bridge for Meta Quest. Plugin marketplace. OS-level context layer that works across every device Logitech makes.</p>
+          <div class="timeline-tags">
+            <span class="timeline-tag">VR Bridge</span>
+            <span class="timeline-tag">Plugin SDK</span>
+            <span class="timeline-tag">Logitech Marketplace</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="logitech-badge">🏆 Logitech DevStudio 2026 Submission</div>
+    <div class="footer-logo">🌊 Context Flow</div>
+    <p class="footer-tagline">"Stop switching apps. Start switching contexts."</p>
+    <div class="footer-links">
+      <a href="https://github.com/cinderspire/context-flow" target="_blank">GitHub</a>
+      <a href="https://github.com/cinderspire/context-flow/blob/main/docs/VISION.md" target="_blank">Vision</a>
+      <a href="https://github.com/cinderspire/context-flow/blob/main/docs/SUBMISSION.md" target="_blank">Submission</a>
+      <a href="https://github.com/cinderspire" target="_blank">@cinderspire</a>
+    </div>
+    <p class="footer-sub">Built with Electron · MIT License · Logitech DevStudio 2026</p>
+  </footer>
+
+</body>
+</html>

@@ -104,6 +104,66 @@ function generateHTML() {
       border-radius: 50%;
       animation: pulse 2s infinite;
     }
+    /* Hardware device strip */
+    .hw-strip {
+      display: flex;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    .hw-chip {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(255,255,255,0.1);
+      border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 8px;
+      padding: 5px 10px;
+      font-size: 11px;
+      font-weight: 500;
+    }
+    .hw-chip .dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #34d399;
+      animation: pulse 2s infinite;
+    }
+    /* Teleport overlay */
+    .teleport-overlay {
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse at center, rgba(99,102,241,0.95) 0%, rgba(10,10,15,0.98) 100%);
+      z-index: 2000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s;
+    }
+    .teleport-overlay.show {
+      opacity: 1;
+      pointer-events: all;
+    }
+    .teleport-ring {
+      width: 120px; height: 120px;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+      margin-bottom: 24px;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    .teleport-text {
+      font-size: 18px;
+      font-weight: 700;
+      color: white;
+      margin-bottom: 8px;
+    }
+    .teleport-sub {
+      font-size: 13px;
+      color: rgba(255,255,255,0.6);
+    }
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
       50% { opacity: 0.5; transform: scale(1.2); }
@@ -487,7 +547,18 @@ function generateHTML() {
         <div class="status-badge">Active</div>
       </div>
       <div class="running-apps" id="runningApps"></div>
+      <div class="hw-strip">
+        <div class="hw-chip"><span class="dot"></span> MX Creative Console</div>
+        <div class="hw-chip"><span class="dot"></span> Actions Ring</div>
+      </div>
     </div>
+  </div>
+
+  <!-- Teleport Overlay -->
+  <div class="teleport-overlay" id="teleportOverlay">
+    <div class="teleport-ring"></div>
+    <div class="teleport-text">Teleporting Context...</div>
+    <div class="teleport-sub" id="teleportSub">Launching applications</div>
   </div>
 
   <div class="content">
@@ -691,15 +762,27 @@ function generateHTML() {
     async function restoreContext(id) {
       const ctx = contexts.find(c => c.id === id);
       if (!ctx) return;
-      
-      updateStatus('Restoring ' + ctx.name + '...');
-      showToast('🚀', 'Restoring Context', 'Launching ' + (ctx.apps || 'applications') + '...');
-      
+
+      // Show teleport overlay
+      const overlay = document.getElementById('teleportOverlay');
+      const sub = document.getElementById('teleportSub');
+      sub.textContent = 'Launching ' + (ctx.apps || 'applications') + '...';
+      overlay.classList.add('show');
+      updateStatus('Teleporting to ' + ctx.name + '...');
+
+      await delay(300);
+      sub.textContent = 'Restoring window positions...';
+      await delay(400);
+      sub.textContent = 'Syncing app states...';
+      await delay(400);
+      sub.textContent = 'Done!';
+      await delay(300);
+
       const result = await ipcRenderer.invoke('restore-context', id);
-      
-      await delay(800);
-      showToast('✓', 'Context Restored', result.restored + ' apps launched successfully');
-      updateStatus('Ready');
+
+      overlay.classList.remove('show');
+      showToast('🚀', 'Teleported!', ctx.name + ' — ' + result.restored + ' apps restored');
+      updateStatus('Ready • Last restored: ' + ctx.name);
     }
 
     function exportSingleContext(id) {

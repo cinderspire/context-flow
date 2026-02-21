@@ -18,10 +18,11 @@ function initStorage() {
     fs.mkdirSync(DATA_DIR, { recursive: true });
     console.log('[Storage] Created data directory:', DATA_DIR);
   }
-  
+
   // Initialize files if don't exist
   if (!fs.existsSync(CONTEXTS_FILE)) {
     fs.writeFileSync(CONTEXTS_FILE, JSON.stringify([], null, 2));
+    seedDemoContexts();
   }
   if (!fs.existsSync(SETTINGS_FILE)) {
     fs.writeFileSync(SETTINGS_FILE, JSON.stringify({
@@ -30,12 +31,98 @@ function initStorage() {
       focusModeApps: [],
       shortcutsEnabled: true,
       theme: 'dark',
-      version: '1.0.0'
+      version: '2.0.0'
     }, null, 2));
   }
   if (!fs.existsSync(EVENTS_FILE)) {
     fs.writeFileSync(EVENTS_FILE, JSON.stringify([], null, 2));
   }
+}
+
+// Pre-load realistic demo contexts for first-time users / judges
+function seedDemoContexts() {
+  const now = Date.now();
+  const demo = [
+    {
+      id: 'ctx_demo_1',
+      name: '3D Character Sculpt',
+      emoji: '🎨',
+      apps: 'Blender, Figma, Chrome',
+      windows: [
+        { name: 'Blender', title: 'character_hero_v3.blend', icon: '🎨' },
+        { name: 'Figma', title: 'Design System 2026', icon: '✏️' },
+        { name: 'Chrome', title: 'ArtStation Reference Board', icon: '🌐' }
+      ],
+      windowCount: 3,
+      tag: 'Active',
+      time: '2h ago',
+      focusMode: 'creative',
+      os: 'macOS',
+      display: 'Built-in Retina Display',
+      createdAt: now - 7200000,
+      updatedAt: now - 7200000
+    },
+    {
+      id: 'ctx_demo_2',
+      name: 'Code Review Session',
+      emoji: '💻',
+      apps: 'VSCode, Terminal, Chrome',
+      windows: [
+        { name: 'VSCode', title: 'context-flow — feature/ai-predict', icon: '💻' },
+        { name: 'Terminal', title: 'zsh — ~/projects/context-flow', icon: '⌨️' },
+        { name: 'Chrome', title: 'GitHub PR #42 — Actions SDK', icon: '🌐' }
+      ],
+      windowCount: 3,
+      tag: 'Active',
+      time: 'Yesterday',
+      focusMode: 'development',
+      os: 'macOS',
+      display: 'Built-in Retina Display',
+      createdAt: now - 86400000,
+      updatedAt: now - 86400000
+    },
+    {
+      id: 'ctx_demo_3',
+      name: 'Client Presentation',
+      emoji: '📹',
+      apps: 'Zoom, Notion, Chrome',
+      windows: [
+        { name: 'Zoom', title: 'Logitech DevStudio Meeting', icon: '📹' },
+        { name: 'Notion', title: 'Q1 2026 Product Roadmap', icon: '📝' },
+        { name: 'Chrome', title: 'Context Flow Demo — Slides', icon: '🌐' }
+      ],
+      windowCount: 3,
+      tag: 'Draft',
+      time: '3 days ago',
+      focusMode: 'meeting',
+      os: 'macOS',
+      display: 'Built-in Retina Display',
+      createdAt: now - 259200000,
+      updatedAt: now - 259200000
+    },
+    {
+      id: 'ctx_demo_4',
+      name: 'Research & Writing',
+      emoji: '📚',
+      apps: 'Notion, Chrome, Slack',
+      windows: [
+        { name: 'Notion', title: 'DevStudio 2026 Submission Notes', icon: '📝' },
+        { name: 'Chrome', title: 'Logitech Actions SDK Docs', icon: '🌐' },
+        { name: 'Slack', title: '#devstudio-2026 — Logitech', icon: '💬' }
+      ],
+      windowCount: 3,
+      tag: 'Draft',
+      time: '1 week ago',
+      focusMode: 'research',
+      os: 'macOS',
+      display: 'Built-in Retina Display',
+      createdAt: now - 604800000,
+      updatedAt: now - 604800000
+    }
+  ];
+
+  fs.writeFileSync(CONTEXTS_FILE, JSON.stringify(demo, null, 2));
+  console.log('[Storage] Seeded', demo.length, 'demo contexts');
 }
 
 // Contexts CRUD
