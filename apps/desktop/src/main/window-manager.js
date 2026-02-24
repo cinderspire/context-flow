@@ -14,9 +14,9 @@ function delay(ms) {
   return new Promise(r => setTimeout(r, ms));
 }
 
-// ── SNAP: Capture actually running apps ──────────────────────────────────────
+// ── SNAP: Capture actually running apps + real Safari tabs + Terminal dir ────
 async function captureContext(name = null) {
-  // Get real running visible apps via osascript
+  // 1. Get real running visible apps
   let runningApps = [];
   try {
     const { stdout } = await execAsync(
@@ -27,6 +27,35 @@ async function captureContext(name = null) {
   } catch (e) {
     runningApps = ['Safari', 'Terminal'];
   }
+
+  // 2. Capture real Safari tabs
+  let safariTabs = [];
+  try {
+    const { stdout } = await execAsync(`osascript << 'EOF'
+tell application "Safari"
+  set tabList to {}
+  repeat with w in windows
+    repeat with t in tabs of w
+      if URL of t is not missing value then
+        set end of tabList to URL of t
+      end if
+    end repeat
+  end repeat
+  return tabList
+end tell
+EOF`);
+    safariTabs = stdout.trim().split(', ').filter(u => u.startsWith('http'));
+  } catch (e) { /* Safari not open */ }
+
+  // 3. Capture Terminal working directory
+  let terminalDir = null;
+  try {
+    const { stdout: tty } = await execAsync(`osascript -e 'tell application "Terminal" to get the tty of front window' 2>/dev/null`);
+    if (tty.trim()) {
+      const { stdout: lsofOut } = await execAsync(`lsof -p $(lsof ${tty.trim()} 2>/dev/null | awk 'NR>1 {print $2}' | sort -u | head -1) 2>/dev/null | grep cwd | awk '{print $NF}'`);
+      terminalDir = lsofOut.trim() || null;
+    }
+  } catch (e) { /* Terminal not open */ }
 
   const appMeta = {
     'Safari':           { icon: '🌐', name: 'Safari' },
@@ -44,7 +73,10 @@ async function captureContext(name = null) {
     name: (appMeta[appName] || { name: appName }).name,
     title: appName,
     icon: (appMeta[appName] || { icon: '🪟' }).icon,
-    pid: 1000 + i
+    pid: 1000 + i,
+    // Deep state
+    ...(appName === 'Safari' && safariTabs.length ? { tabs: safariTabs } : {}),
+    ...(appName === 'Terminal' && terminalDir ? { cwd: terminalDir } : {})
   }));
 
   const timestamp = Date.now();
@@ -270,6 +302,37 @@ EOF`).catch(() => {});
 // ── Generic restore for user-snapped contexts ────────────────────────────────
 async function restoreGeneric(context) {
   for (const w of context.windows) {
+    if (w.app === 'Safari' && w.tabs && w.tabs.length > 0) {
+      // Restore real Safari tabs
+      await execAsync(`osascript << 'EOF'
+tell application "Safari"
+  activate
+  -- open first tab in existing window
+  set URL of current tab of front window to "${w.tabs[0]}"
+end tell
+EOF`).catch(() => {});
+      await delay(500);
+      // Open additional tabs
+      for (let i = 1; i < Math.min(w.tabs.length, 5); i++) {
+        await execAsync(`osascript -e 'tell application "Safari" to tell front window to set current tab to (make new tab with properties {URL:"${w.tabs[i]}"})'`).catch(() => {});
+        await delay(300);
+      }
+      continue;
+    }
+
+    if (w.app === 'Terminal' && w.cwd) {
+      // Restore Terminal to exact directory
+      await execAsync(`osascript << 'EOF'
+tell application "Terminal"
+  activate
+  do script "cd '${w.cwd}' && echo '📍 Restored: ${w.cwd}'"
+end tell
+EOF`).catch(() => {});
+      await delay(600);
+      continue;
+    }
+
+    // Generic: just open the app
     await execAsync(`open -a "${w.app}" 2>/dev/null || true`).catch(() => {});
     await delay(600);
   }
