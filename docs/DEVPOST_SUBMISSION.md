@@ -26,9 +26,11 @@ Character count: ~390 ✓
 ---
 
 ## VIDEO LINK
-> Add your YouTube/Vimeo link here after recording
 
-**Format:** `https://youtube.com/watch?v=YOUR_ID`
+**GitHub Release (direct):**
+`https://github.com/cinderspire/context-flow/releases/download/v2.0.0/context-flow-demo.mp4`
+
+> If uploading to YouTube, replace with: `https://youtube.com/watch?v=YOUR_ID`
 
 **What to show in 60 seconds:**
 - 0:00 — Problem stat: "1,200 app switches/day, 23s each = 5 weeks/year lost"

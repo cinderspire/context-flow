@@ -16,7 +16,7 @@
 
 ## 🎬 Demo
 
-> **1-Minute Pitch Video**: *(YouTube link — add after recording, before Feb 25)*
+> **Demo Video**: [▶ Watch on GitHub](https://github.com/cinderspire/context-flow/releases/download/v2.0.0/context-flow-demo.mp4)
 
 **Landing Page**: [cinderspire.github.io/context-flow](https://cinderspire.github.io/context-flow/)
 **Download**: [Latest Release (macOS DMG)](https://github.com/cinderspire/context-flow/releases/latest)
